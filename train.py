@@ -5,9 +5,9 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from model.resnet import ResNet50
 from utils.load import CatsDogsDataset
+from tqdm import tqdm
 
 
-# 定义训练函数
 def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, device='cuda'):
     model = model.to(device)
 
@@ -17,7 +17,10 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
         correct = 0
         total = 0
 
-        for inputs, labels in train_loader:
+        # 使用 tqdm 创建一个进度条
+        progress_bar = tqdm(enumerate(train_loader), total=len(train_loader), desc=f"Epoch {epoch + 1}/{num_epochs}")
+
+        for batch_idx, (inputs, labels) in progress_bar:
             inputs, labels = inputs.to(device), labels.to(device)
 
             # 前向传播
@@ -34,8 +37,11 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
 
-        print(
-            f"Epoch [{epoch + 1}/{num_epochs}], Loss: {running_loss / len(train_loader):.4f}, Accuracy: {100 * correct / total:.2f}%")
+            # 更新进度条描述信息
+            progress_bar.set_postfix(loss=loss.item(), accuracy=100 * correct / total)
+
+        # 打印每个 epoch 的平均 loss 和准确率
+        print(f"Epoch [{epoch + 1}/{num_epochs}], Average Loss: {running_loss / len(train_loader):.4f}, Accuracy: {100 * correct / total:.2f}%")
 
 
 if __name__ == "__main__":
