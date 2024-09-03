@@ -1,0 +1,13 @@
+# Python编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pycharm
+.idea/
+
+DDTI
+*.zip
+
+# 忽略数据文件
+dogs-vs-cats-redux-kernels-edition/*
