@@ -1,8 +1,9 @@
+import argparse
 import torch
 import torch.optim as optim
 from torch import nn
 from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
+from torchvision import transforms
 from model.resnet import ResNet50
 from utils.load import CatsDogsDataset
 from tqdm import tqdm
@@ -50,25 +51,29 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
 
 
 if __name__ == "__main__":
-    # 使用 CIFAR-10 数据集来测试训练
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description="Train a ResNet model on Cats vs Dogs dataset.")
+    parser.add_argument('--train_dir', type=str, required=False, default='./dogs-vs-cats-redux-kernels-edition/train', help='Path to the training dataset directory.')
+    parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs for training.')
+    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training.')
+    parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for optimizer.')
+    args = parser.parse_args()
+
+    # 数据转换
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # ResNet 通常使用 224x224 的输入
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
     ])
 
-    # 数据集路径
-    train_dir = './dogs-vs-cats-redux-kernels-edition/train'
-
     # 创建数据集和数据加载器
-    train_dataset = CatsDogsDataset(root_dir=train_dir, transform=transform)
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
-    val_loader = None
+    train_dataset = CatsDogsDataset(root_dir=args.train_dir, transform=transform)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
 
     # 实例化模型、损失函数和优化器
-    model = ResNet50(num_classes=10)
+    model = ResNet50(num_classes=2)  # 对于二分类任务，猫和狗
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
 
     # 开始训练
-    train_resnet(model, train_loader, criterion, optimizer, num_epochs=10)
+    train_resnet(model, train_loader, criterion, optimizer, num_epochs=args.num_epochs)
