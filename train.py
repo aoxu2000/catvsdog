@@ -5,7 +5,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from model.resnet import ResNet50
-from utils.load import CatsDogsDataset
+from utils.loadtrain import CatsDogsTrainDataset
 from tqdm import tqdm
 
 
@@ -53,7 +53,7 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
 if __name__ == "__main__":
     # 解析命令行参数
     parser = argparse.ArgumentParser(description="Train a ResNet model on Cats vs Dogs dataset.")
-    parser.add_argument('--train_dir', type=str, required=False, default='./dogs-vs-cats-redux-kernels-edition/train', help='Path to the training dataset directory.')
+    parser.add_argument('--_size', type=str, required=False, default='./dogs-vs-cats-redux-kernels-edition/train', help='Path to the training dataset directory.')
     parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs for training.')
     parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training.')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for optimizer.')
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     ])
 
     # 创建数据集和数据加载器
-    train_dataset = CatsDogsDataset(root_dir=args.train_dir, transform=transform)
+    train_dataset = CatsDogsTrainDataset(root_dir=args.train_dir, transform=transform)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
 
     # 实例化模型、损失函数和优化器

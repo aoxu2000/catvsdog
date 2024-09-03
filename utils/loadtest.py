@@ -5,7 +5,7 @@ from torchvision import transforms
 from PIL import Image
 
 
-class CatsDogsDataset(Dataset):
+class CatsDogsTestDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         """
         Args:
@@ -24,18 +24,10 @@ class CatsDogsDataset(Dataset):
         img_path = os.path.join(self.root_dir, img_name)
         image = Image.open(img_path)
 
-        # 从文件名中提取标签
-        if 'cat' in img_name:
-            label = 0  # 代表猫
-        elif 'dog' in img_name:
-            label = 1  # 代表狗
-        else:
-            raise ValueError("图片文件名中必须包含 'cat' 或 'dog' 关键字")
-
         if self.transform:
             image = self.transform(image)
 
-        return image, label
+        return image
 
 
 if __name__ == '__main__':
@@ -47,14 +39,13 @@ if __name__ == '__main__':
     ])
 
     # 数据集路径
-    train_dir = './dogs-vs-cats-redux-kernels-edition/train'
+    test_dir = './dogs-vs-cats-redux-kernels-edition/test'
 
     # 创建数据集和数据加载器
-    train_dataset = CatsDogsDataset(root_dir=train_dir, transform=transform)
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
+    test_dataset = CatsDogsTestDataset(root_dir=test_dir, transform=transform)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
     # 测试数据加载器
-    for images, labels in train_loader:
+    for images in test_loader:
         print(images.shape)  # 打印批量的图像形状
-        print(labels)  # 打印批量的标签
         break  # 仅查看第一个批次

@@ -1,9 +1,10 @@
+import argparse
 import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import pandas as pd
 from model.resnet import ResNet50
-from utils.load import CatsDogsDataset
+from utils.loadtest import CatsDogsTestDataset
 
 
 def load_model(model_path, device='cuda'):
@@ -19,7 +20,7 @@ def predict(model, test_loader, device='cuda'):
     model = model.to(device)
 
     with torch.no_grad():
-        for idx, (inputs, _) in enumerate(test_loader):
+        for idx, inputs in enumerate(test_loader):
             inputs = inputs.to(device)
             outputs = model(inputs)
             _, predicted = torch.max(outputs, 1)
@@ -29,6 +30,13 @@ def predict(model, test_loader, device='cuda'):
 
 
 if __name__ == "__main__":
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description="Predict using a pre-trained ResNet model.")
+    parser.add_argument('--test_dir', type=str, required=False, default='./dogs-vs-cats-redux-kernels-edition/test', help='Path to the test dataset directory.')
+    parser.add_argument('--model_path', type=str, required=False, default='./ckpt/resnet50_cats_dogs.pth', help='Path to the trained model (.pth file).')
+    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for testing.')
+    args = parser.parse_args()
+
     # 图像预处理
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # ResNet 通常使用 224x224 的输入
@@ -37,14 +45,14 @@ if __name__ == "__main__":
     ])
 
     # 数据集路径
-    test_dir = './dogs-vs-cats-redux-kernels-edition/test'
+    test_dir = args.test_dir
 
     # 创建测试集和数据加载器
-    test_dataset = CatsDogsDataset(root_dir=test_dir, transform=transform)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
+    test_dataset = CatsDogsTestDataset(root_dir=test_dir, transform=transform)
+    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
 
     # 加载预训练模型
-    model_path = './model.pth'  # 训练时保存的模型文件
+    model_path = args.model_path
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = load_model(model_path, device)
 
