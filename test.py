@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import pandas as pd
+from tqdm import tqdm  # 导入 tqdm
 from model.resnet import ResNet50
 from utils.loadtest import CatsDogsTestDataset
 
@@ -20,11 +21,17 @@ def predict(model, test_loader, device='cuda'):
     model = model.to(device)
 
     with torch.no_grad():
-        for idx, inputs in enumerate(test_loader):
+        # 使用 tqdm 创建一个进度条
+        progress_bar = tqdm(enumerate(test_loader), total=len(test_loader), desc="Processing batches")
+
+        for idx, inputs in progress_bar:
             inputs = inputs.to(device)
             outputs = model(inputs)
             _, predicted = torch.max(outputs, 1)
             predictions.extend(predicted.cpu().numpy())
+
+            # 更新进度条描述信息
+            progress_bar.set_postfix(batch_idx=idx)
 
     return predictions
 

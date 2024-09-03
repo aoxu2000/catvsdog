@@ -53,7 +53,7 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
 if __name__ == "__main__":
     # 解析命令行参数
     parser = argparse.ArgumentParser(description="Train a ResNet model on Cats vs Dogs dataset.")
-    parser.add_argument('--_size', type=str, required=False, default='./dogs-vs-cats-redux-kernels-edition/train', help='Path to the training dataset directory.')
+    parser.add_argument('--train_dir', type=str, required=False, default='./dogs-vs-cats-redux-kernels-edition/train', help='Path to the training dataset directory.')
     parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs for training.')
     parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training.')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for optimizer.')
