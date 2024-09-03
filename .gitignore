@@ -11,3 +11,8 @@ DDTI
 
 # 忽略数据文件
 dogs-vs-cats-redux-kernels-edition/*
+!dogs-vs-cats-redux-kernels-edition/
+
+# 忽略模型权重文件
+ckpt/*
+!ckpt/
