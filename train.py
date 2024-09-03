@@ -43,6 +43,11 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
         # 打印每个 epoch 的平均 loss 和准确率
         print(f"Epoch [{epoch + 1}/{num_epochs}], Average Loss: {running_loss / len(train_loader):.4f}, Accuracy: {100 * correct / total:.2f}%")
 
+    # 保存模型
+    model_save_path = './resnet50_cats_dogs.pth'
+    torch.save(model.state_dict(), model_save_path)
+    print(f"Model saved to {model_save_path}")
+
 
 if __name__ == "__main__":
     # 使用 CIFAR-10 数据集来测试训练
