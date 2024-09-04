@@ -8,8 +8,7 @@ from model.resnet import ResNet50
 from utils.loadtrain import CatsDogsTrainDataset
 from tqdm import tqdm
 
-
-def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, device='cuda'):
+def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, device='cuda', save_path='./resnet50_cats_dogs.pth'):
     model = model.to(device)
 
     for epoch in range(num_epochs):
@@ -45,9 +44,9 @@ def train_resnet(model, train_loader, criterion, optimizer, num_epochs=10, devic
         print(f"Epoch [{epoch + 1}/{num_epochs}], Average Loss: {running_loss / len(train_loader):.4f}, Accuracy: {100 * correct / total:.2f}%")
 
     # 保存模型
-    model_save_path = './resnet50_cats_dogs.pth'
-    torch.save(model.state_dict(), model_save_path)
-    print(f"Model saved to {model_save_path}")
+    if save_path:
+        torch.save(model.state_dict(), save_path)
+        print(f"Model saved to {save_path}")
 
 
 if __name__ == "__main__":
@@ -57,6 +56,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs for training.')
     parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training.')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for optimizer.')
+    parser.add_argument('--save_path', type=str, default='./resnet50_cats_dogs.pth', help='Path to save the model weights.')
     args = parser.parse_args()
 
     # 数据转换
@@ -76,4 +76,4 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
 
     # 开始训练
-    train_resnet(model, train_loader, criterion, optimizer, num_epochs=args.num_epochs)
+    train_resnet(model, train_loader, criterion, optimizer, num_epochs=args.num_epochs, save_path=args.save_path)
