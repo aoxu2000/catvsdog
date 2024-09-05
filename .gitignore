@@ -16,3 +16,6 @@ dogs-vs-cats-redux-kernels-edition/*
 # 忽略模型权重文件
 ckpt/*
 !ckpt/.gitkeep
+
+submission.csv
+
