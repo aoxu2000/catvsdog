@@ -35,7 +35,7 @@ class CatsDogsTrainDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        return image, label
+        return image, label, img_path
 
 
 if __name__ == '__main__':
