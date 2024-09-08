@@ -25,9 +25,11 @@ class CatsDogsTestDataset(Dataset):
         image = Image.open(img_path)
 
         if self.transform:
-            image = self.transform(image)
+            resnetImage = self.transform(image)
 
-        return image
+        id = int(img_name.split('.')[0])
+
+        return resnetImage, id
 
 
 if __name__ == '__main__':
